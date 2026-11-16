@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Слоги на И: игры</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Golos+Text:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg: #F3F6FB; --ink: #141A26; --muted: #5B6578; --line: #141A26; --card: #FFFFFF;
+  --accent: #2457F5; --mark: #FFD84D; --mark-ink: #141A26;
+  --ok: #17874F; --ok-bg: #DDF3E6; --bad: #CF3030; --bad-bg: #FBE1E1; --soft: #E6ECF7;
+  --gold: #F4C542; --gold2: #E0A323;
+  --f-display: "Rubik", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --f-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F131C; --ink: #EEF2FA; --muted: #9AA5BA; --line: #C9D3E6; --card: #181E2B;
+    --accent: #7E9DFF; --ok: #5DD596; --ok-bg: #12301F; --bad: #FF7A7A; --bad-bg: #3A1A1D; --soft: #222A3B;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F131C; --ink: #EEF2FA; --muted: #9AA5BA; --line: #C9D3E6; --card: #181E2B;
+  --accent: #7E9DFF; --ok: #5DD596; --ok-bg: #12301F; --bad: #FF7A7A; --bad-bg: #3A1A1D; --soft: #222A3B;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.45;
+  padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+header { display: flex; flex-direction: column; gap: 12px; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(30px, 8vw, 44px); line-height: 1.05; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.sub { margin: 0; color: var(--muted); font-size: 16px; }
+.progress { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.dots { display: flex; gap: 6px; }
+.dot { width: 30px; height: 12px; border-radius: 6px; background: var(--soft); border: 2px solid var(--line); }
+.dot.on { background: var(--ok); border-color: var(--ok); }
+.progress-text { font-weight: 600; color: var(--muted); font-size: 15px; }
+
+.ex { background: var(--card); border: 3px solid var(--line); border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.ex-head { display: flex; gap: 12px; align-items: flex-start; }
+.num { flex: none; width: 40px; height: 40px; border-radius: 12px; background: var(--mark); color: var(--mark-ink); font-family: var(--f-display); font-weight: 800; font-size: 22px; display: grid; place-items: center; }
+.ex-head h2 { margin: 0; font-family: var(--f-display); font-weight: 700; font-size: 20px; line-height: 1.25; text-wrap: balance; }
+.tag { display: inline-block; margin-top: 4px; padding: 2px 10px; border-radius: 999px; background: var(--soft); color: var(--muted); font-size: 13px; font-weight: 600; }
+.hint { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+button.btn { font: 700 17px/1 var(--f-display); border: 3px solid var(--line); border-radius: 14px; padding: 13px 20px; cursor: pointer; background: var(--card); color: var(--ink); min-height: 48px; }
+button.btn:active { transform: translateY(1px); }
+.result { font-weight: 600; min-height: 1.45em; flex: 1 1 200px; }
+.result.good { color: var(--ok); }
+.result.warn { color: var(--bad); }
+
+/* 1: скретч-карты */
+.scr-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+button.scr { height: 78px; border: 3px solid var(--line); border-radius: 16px; font: 800 32px/1 var(--f-display); letter-spacing: 0.04em; cursor: pointer; padding: 0; color: #7a5a00;
+  background: repeating-linear-gradient(135deg, var(--gold) 0 10px, var(--gold2) 10px 20px); }
+button.scr.open { background: var(--card); color: var(--ink); }
+button.scr.open .v { color: var(--accent); }
+button.scr.open.read { background: var(--ok-bg); }
+button.scr.open.read .v { color: var(--ok); }
+
+/* 2: шарики */
+.balloons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+button.bal { aspect-ratio: 4 / 5; border: 3px solid var(--line); border-radius: 50% 50% 48% 48% / 56% 56% 44% 44%; font: 800 26px/1 var(--f-display); letter-spacing: 0.03em; color: #141A26; cursor: pointer; padding: 0; position: relative; }
+button.bal::after { content: ""; position: absolute; left: 50%; bottom: -12px; width: 2px; height: 10px; background: var(--line); }
+button.bal.c0 { background: #FF9AA2; } button.bal.c1 { background: #FFD97A; } button.bal.c2 { background: #A8E6A3; } button.bal.c3 { background: #9CC8FF; }
+button.bal.pop { visibility: hidden; }
+button.bal.bad { background: var(--bad-bg); animation: shake .3s; }
+@keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+/* 3: мемори */
+.mem { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+button.mc { height: 84px; border: 3px solid var(--line); border-radius: 16px; font: 800 24px/1.1 var(--f-display); letter-spacing: 0.03em; cursor: pointer; padding: 4px; color: var(--accent);
+  background: repeating-linear-gradient(45deg, var(--soft) 0 8px, var(--card) 8px 16px); }
+button.mc.up { background: var(--card); color: var(--ink); }
+button.mc.up.syl { background: #FFF4C4; color: #141A26; }
+button.mc.match { background: var(--ok-bg); border-color: var(--ok); color: var(--ink); cursor: default; }
+
+/* 4: гонки */
+.track { position: relative; height: 56px; border: 3px solid var(--line); border-radius: 16px; background: repeating-linear-gradient(90deg, var(--soft) 0 24px, var(--card) 24px 48px); overflow: hidden; }
+.car { position: absolute; top: 6px; left: 8px; font-size: 30px; line-height: 1; transition: left .5s ease; transform: scaleX(-1); }
+.flag { position: absolute; right: 8px; top: 8px; font-size: 28px; }
+.race-q { text-align: center; font: 700 20px/1.3 var(--f-display); margin: 0; }
+.race-opts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+button.big { font: 800 28px/1 var(--f-display); letter-spacing: 0.04em; border: 3px solid var(--line); border-radius: 16px; padding: 18px 8px; background: var(--card); color: var(--ink); cursor: pointer; min-height: 64px; overflow-wrap: anywhere; }
+button.big:hover:not(:disabled) { background: var(--soft); }
+button.big.ok { background: var(--ok-bg); border-color: var(--ok); }
+button.big.bad { background: var(--bad-bg); border-color: var(--bad); animation: shake .3s; }
+button.big:disabled { cursor: default; }
+
+/* 5: сундук */
+.chest { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.chest .box { font-size: 56px; line-height: 1; }
+.code { display: flex; gap: 8px; }
+.code span { width: 52px; height: 60px; border: 3px solid var(--line); border-radius: 12px; display: grid; place-items: center; font: 800 30px/1 var(--f-display); background: var(--soft); }
+.code span.on { background: var(--ok-bg); border-color: var(--ok); color: var(--ok); }
+.locks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.lock { border: 2.5px solid var(--line); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.lock .big-w { font-family: var(--f-display); font-weight: 800; font-size: 26px; letter-spacing: 0.04em; text-align: center; overflow-wrap: anywhere; }
+.lock .split { min-height: 1.3em; text-align: center; font: 600 18px/1.3 var(--f-display); letter-spacing: 0.06em; color: var(--ok); }
+.lock.done { background: var(--ok-bg); border-color: var(--ok); }
+.opts { display: flex; gap: 8px; }
+button.opt { flex: 1 1 0; min-width: 0; font: 700 22px/1 var(--f-display); border: 2.5px solid var(--line); border-radius: 14px; padding: 12px 6px; background: var(--card); color: var(--ink); cursor: pointer; min-height: 52px; }
+button.opt:hover:not(:disabled) { background: var(--soft); }
+button.opt.bad { background: var(--bad-bg); border-color: var(--bad); }
+button.opt.ok { background: var(--ok-bg); border-color: var(--ok); }
+button.opt:disabled { cursor: default; opacity: .55; }
+button.opt.ok:disabled { opacity: 1; }
+
+@media (max-width: 520px) {
+  .ex { padding: 14px; }
+  button.scr { height: 70px; font-size: 28px; }
+  button.bal { font-size: 22px; }
+  button.mc { height: 76px; font-size: 20px; }
+  .locks { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .car { transition: none; } button.bal.bad, button.big.bad { animation: none; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Слоги на И: игры</h1>
+    <p class="sub">Пять игр: скретч-карты, шарики, мемори, гонки и сундук с кодом.</p>
+    <div class="progress">
+      <div class="dots" aria-hidden="true"><span class="dot" id="d1"></span><span class="dot" id="d2"></span><span class="dot" id="d3"></span><span class="dot" id="d4"></span><span class="dot" id="d5"></span></div>
+      <span class="progress-text" id="ptext">Сделано 0 из 5</span>
+    </div>
+  </header>
+
+  <section class="ex" aria-labelledby="t1">
+    <div class="ex-head"><div class="num">1</div>
+      <div><h2 id="t1">Скретч-карты: прочитай слоги с И</h2><span class="tag">Механика «Скретч-карта»</span>
+      <p class="hint">Нажми на золотую карту, сотри слой и прочитай слог вслух. Нажми ещё раз, если прочитал, и карта станет зелёной.</p></div></div>
+    <div class="scr-grid" id="g1"></div>
+    <div class="bar">
+      <button class="btn" id="rst1" type="button">Начать заново</button>
+      <div class="result" id="res1" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="ex" aria-labelledby="t2">
+    <div class="ex-head"><div class="num">2</div>
+      <div><h2 id="t2">Лопни шарик: найди слоги с И</h2><span class="tag">Механика «Лопни шарик»</span>
+      <p class="hint">Лопай только шарики, где есть буква И. Остальные шарики не трогай.</p></div></div>
+    <div class="balloons" id="g2"></div>
+    <div class="bar">
+      <button class="btn" id="rst2" type="button">Начать заново</button>
+      <div class="result" id="res2" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="ex" aria-labelledby="t3">
+    <div class="ex-head"><div class="num">3</div>
+      <div><h2 id="t3">Мемори: слог и слово</h2><span class="tag">Механика «Мемори»</span>
+      <p class="hint">Открой две карты. Найди пару: жёлтый слог и слово, которое с него начинается.</p></div></div>
+    <div class="mem" id="g3"></div>
+    <div class="bar">
+      <button class="btn" id="rst3" type="button">Начать заново</button>
+      <div class="result" id="res3" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="ex" aria-labelledby="t4">
+    <div class="ex-head"><div class="num">4</div>
+      <div><h2 id="t4">Гонки: пиши слова правильно</h2><span class="tag">Механика «Гонки»</span>
+      <p class="hint">Каждый верный ответ двигает машину вперёд. Помни: после Ж и Ш всегда пишем И.</p></div></div>
+    <div class="track" aria-hidden="true"><span class="car" id="car">🏎️</span><span class="flag">🏁</span></div>
+    <p class="race-q" id="rq"></p>
+    <div class="race-opts" id="g4"></div>
+    <div class="bar">
+      <button class="btn" id="rst4" type="button">Начать заново</button>
+      <div class="result" id="res4" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="ex" aria-labelledby="t5">
+    <div class="ex-head"><div class="num">5</div>
+      <div><h2 id="t5">Сундук с кодом: сколько слогов?</h2><span class="tag">Механика «Сундук с кодом»</span>
+      <p class="hint">Реши четыре задания. Каждый ответ открывает цифру кода. Сколько гласных, столько и слогов.</p></div></div>
+    <div class="chest"><div class="box" id="box" aria-hidden="true">🔒</div><div class="code" id="code" aria-label="Код сундука"></div></div>
+    <div class="locks" id="g5"></div>
+    <div class="bar">
+      <button class="btn" id="rst5" type="button">Начать заново</button>
+      <div class="result" id="res5" role="status" aria-live="polite"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var done = [false, false, false, false, false];
+  function refresh() {
+    var n = 0;
+    for (var i = 0; i < 5; i++) { $('d' + (i + 1)).classList.toggle('on', done[i]); if (done[i]) n++; }
+    $('ptext').textContent = n === 5 ? 'Все пять игр пройдены. Молодец!' : 'Сделано ' + n + ' из 5';
+  }
+  function setRes(el, text, kind) { el.className = 'result' + (kind ? ' ' + kind : ''); el.textContent = text; }
+  function shuffle(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function mk(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  /* 1. скретч-карты */
+  var SYL = ['ДИ', 'НИ', 'ЖИ', 'ШИ', 'БИ', 'ВИ', 'ГИ', 'ЗИ', 'КИ', 'ЛИ', 'МИ', 'ПИ', 'РИ', 'СИ', 'ТИ'];
+  var g1 = $('g1'), res1 = $('res1'), cards1 = [];
+  function upd1() {
+    var n = cards1.filter(function (c) { return c.classList.contains('read'); }).length;
+    done[0] = n === SYL.length; refresh();
+    if (done[0]) setRes(res1, 'Все слоги прочитаны. Молодец!', 'good'); else setRes(res1, 'Прочитано ' + n + ' из ' + SYL.length);
+  }
+  function setCard(b, s, state) {
+    b.classList.toggle('open', state > 0); b.classList.toggle('read', state > 1);
+    b.dataset.state = state;
+    if (state === 0) { b.textContent = '★'; b.setAttribute('aria-label', 'Закрытая карта'); }
+    else { b.innerHTML = s.charAt(0) + '<span class="v">И</span>'; b.setAttribute('aria-label', 'Слог ' + s + (state > 1 ? ', прочитан' : '')); }
+  }
+  SYL.forEach(function (s) {
+    var b = mk('button', 'scr'); b.type = 'button'; setCard(b, s, 0);
+    b.addEventListener('click', function () { var st = +b.dataset.state; setCard(b, s, st === 0 ? 1 : st === 1 ? 2 : 1); upd1(); });
+    cards1.push(b); g1.appendChild(b);
+  });
+  $('rst1').addEventListener('click', function () { cards1.forEach(function (b, i) { setCard(b, SYL[i], 0); }); upd1(); });
+  upd1();
+
+  /* 2. шарики */
+  var BAL = [['ДИ', 1], ['ДА', 0], ['НИ', 1], ['НО', 0], ['ЖИ', 1], ['ЖУ', 0], ['ШИ', 1], ['ШО', 0], ['МИ', 1], ['МА', 0], ['ЛИ', 1], ['ЛУ', 0]];
+  var g2 = $('g2'), res2 = $('res2'), bals = [], popped = 0, miss = 0, TARGET = 6;
+  function build2() {
+    g2.textContent = ''; bals = []; popped = 0; miss = 0; done[1] = false; refresh();
+    shuffle(BAL).forEach(function (it, i) {
+      var b = mk('button', 'bal c' + (i % 4), it[0]); b.type = 'button'; b.setAttribute('aria-label', 'Шарик ' + it[0]);
+      b.addEventListener('click', function () {
+        if (b.classList.contains('pop')) return;
+        if (it[1]) {
+          b.classList.add('pop'); popped++;
+          if (popped === TARGET) { done[1] = true; refresh(); setRes(res2, 'Все шарики с И лопнули. Ошибок: ' + miss + '. Молодец!', 'good'); }
+          else setRes(res2, 'Лопнуло ' + popped + ' из ' + TARGET, 'good');
+        } else {
+          miss++; b.classList.add('bad'); setRes(res2, 'В этом слоге нет И. Не лопай его.', 'warn');
+          setTimeout(function () { b.classList.remove('bad'); }, 600);
+        }
+      });
+      bals.push(b); g2.appendChild(b);
+    });
+    setRes(res2, 'Лопнуло 0 из ' + TARGET);
+  }
+  $('rst2').addEventListener('click', build2); build2();
+
+  /* 3. мемори */
+  var PAIRS = [['ДИ', 'ДИВАН'], ['НИ', 'НИТКА'], ['ЖИ', 'ЖИРАФ'], ['ШИ', 'ШИШКА'], ['МИ', 'МИШКА'], ['ЛИ', 'ЛИМОН']];
+  var g3 = $('g3'), res3 = $('res3'), open3 = [], lock3 = false, found = 0, moves = 0;
+  function build3() {
+    g3.textContent = ''; open3 = []; lock3 = false; found = 0; moves = 0; done[2] = false; refresh();
+    var cards = [];
+    PAIRS.forEach(function (p, i) { cards.push({ id: i, t: p[0], syl: true }); cards.push({ id: i, t: p[1], syl: false }); });
+    shuffle(cards).forEach(function (c) {
+      var b = mk('button', 'mc', '?'); b.type = 'button'; b.setAttribute('aria-label', 'Закрытая карта');
+      b.addEventListener('click', function () {
+        if (lock3 || b.classList.contains('up') || b.classList.contains('match')) return;
+        b.classList.add('up'); if (c.syl) b.classList.add('syl'); b.textContent = c.t; b.setAttribute('aria-label', c.t);
+        open3.push({ b: b, c: c });
+        if (open3.length === 2) {
+          moves++; var a = open3[0], d = open3[1];
+          if (a.c.id === d.c.id) {
+            a.b.classList.add('match'); d.b.classList.add('match'); open3 = []; found++;
+            if (found === PAIRS.length) { done[2] = true; refresh(); setRes(res3, 'Все пары найдены за ' + moves + ' ходов. Молодец!', 'good'); }
+            else setRes(res3, 'Пара! Найдено ' + found + ' из ' + PAIRS.length, 'good');
+          } else {
+            lock3 = true; setRes(res3, 'Не пара. Запомни карты.', 'warn');
+            setTimeout(function () {
+              [a, d].forEach(function (x) { x.b.classList.remove('up', 'syl'); x.b.textContent = '?'; x.b.setAttribute('aria-label', 'Закрытая карта'); });
+              open3 = []; lock3 = false;
+            }, 1000);
+          }
+        }
+      });
+      g3.appendChild(b);
+    });
+    setRes(res3, 'Найдено 0 из ' + PAIRS.length);
+  }
+  $('rst3').addEventListener('click', build3); build3();
+
+  /* 4. гонки */
+  var RACE = [['ЖИРАФ', 'ЖЫРАФ'], ['ШИНА', 'ШЫНА'], ['МАШИНА', 'МАШЫНА'], ['ЖИВОТ', 'ЖЫВОТ'], ['ШИШКА', 'ШЫШКА'], ['ЖИЛЕТ', 'ЖЫЛЕТ']];
+  var g4 = $('g4'), res4 = $('res4'), q4 = 0, order4 = [];
+  function step4() {
+    g4.textContent = '';
+    $('car').style.left = (8 + (q4 / RACE.length) * (($('car').parentNode.clientWidth || 300) - 70)) + 'px';
+    if (q4 >= RACE.length) { done[3] = true; refresh(); $('rq').textContent = 'Финиш!'; setRes(res4, 'Ты приехал первым. Молодец!', 'good'); return; }
+    $('rq').textContent = 'Как правильно писать? (' + (q4 + 1) + ' из ' + RACE.length + ')';
+    var pair = RACE[q4];
+    shuffle([pair[0], pair[1]]).forEach(function (w) {
+      var b = mk('button', 'big', w); b.type = 'button';
+      b.addEventListener('click', function () {
+        if (w === pair[0]) { b.classList.add('ok'); Array.prototype.forEach.call(g4.children, function (x) { x.disabled = true; }); setRes(res4, 'Верно: ' + pair[0] + '. Вперёд!', 'good'); q4++; setTimeout(step4, 700); }
+        else { b.classList.add('bad'); b.disabled = true; setRes(res4, 'Попробуй другое слово.', 'warn'); }
+      });
+      g4.appendChild(b);
+    });
+  }
+  function reset4() { q4 = 0; done[3] = false; refresh(); setRes(res4, ''); step4(); }
+  $('rst4').addEventListener('click', reset4); reset4();
+  window.addEventListener('resize', function () { if (q4 < RACE.length) step4(); });
+
+  /* 5. сундук с кодом */
+  var LOCKS = [['ЛИСА', 2, 'ЛИ-СА'], ['МАШИНА', 3, 'МА-ШИ-НА'], ['РИС', 1, 'РИС'], ['ВИНОГРАД', 3, 'ВИ-НО-ГРАД']];
+  var g5 = $('g5'), res5 = $('res5'), code = $('code'), slots = [], locks = [];
+  function upd5() {
+    var n = locks.filter(function (l) { return l.solved; }).length;
+    done[4] = n === LOCKS.length; refresh();
+    if (done[4]) { $('box').textContent = '🎁'; setRes(res5, 'Сундук открыт! Код: ' + LOCKS.map(function (l) { return l[1]; }).join(''), 'good'); }
+    else { $('box').textContent = '🔒'; setRes(res5, 'Открыто замков: ' + n + ' из ' + LOCKS.length); }
+  }
+  LOCKS.forEach(function (it, i) {
+    var s = mk('span', null, '?'); slots.push(s); code.appendChild(s);
+    var card = mk('div', 'lock'), big = mk('div', 'big-w', it[0]), opts = mk('div', 'opts'), split = mk('div', 'split');
+    split.setAttribute('aria-live', 'polite');
+    var rec = { solved: false, card: card, split: split, btns: [] };
+    [1, 2, 3].forEach(function (n) {
+      var b = mk('button', 'opt', String(n)); b.type = 'button'; b.setAttribute('aria-label', n + (n === 1 ? ' слог' : ' слога'));
+      b.addEventListener('click', function () {
+        if (rec.solved) return;
+        if (n === it[1]) {
+          rec.solved = true; b.classList.add('ok'); card.classList.add('done'); split.textContent = it[2];
+          rec.btns.forEach(function (x) { x.disabled = true; });
+          s.textContent = n; s.classList.add('on'); upd5();
+        } else { b.classList.add('bad'); setTimeout(function () { b.classList.remove('bad'); }, 600); }
+      });
+      rec.btns.push(b); opts.appendChild(b);
+    });
+    card.appendChild(big); card.appendChild(opts); card.appendChild(split); g5.appendChild(card); locks.push(rec);
+  });
+  $('rst5').addEventListener('click', function () {
+    locks.forEach(function (r, i) {
+      r.solved = false; r.card.classList.remove('done'); r.split.textContent = '';
+      r.btns.forEach(function (b) { b.disabled = false; b.classList.remove('ok', 'bad'); });
+      slots[i].textContent = '?'; slots[i].classList.remove('on');
+    });
+    upd5();
+  });
+  upd5();
+
+  refresh();
+})();
+</script>
+</body>
+</html>
